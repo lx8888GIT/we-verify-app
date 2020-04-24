@@ -1,6 +1,6 @@
 
 let elasticSearch_url = process.env.REACT_APP_ELK_URL;
-let gexfGen_url = process.env.GEXF_GENERATOR_URL;
+let gexfGen_url = process.env.REACT_APP_GEXF_GENERATOR_URL;
 
 //Functions calling elastic search and return a JSON plotly can use
 
@@ -414,9 +414,8 @@ let gexfGen_url = process.env.GEXF_GENERATOR_URL;
             "flow":false,
             "esQuery":buildQuery4Gexf(must, mustNot,size)
         }).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
-        console.log("gexfGen_url", gexfGen_url);
         const userAction = async () => {
-            const response = await fetch("http://localhost:8080/generate", {
+            const response = await fetch(gexfGen_url, {
                 method: 'POST',
                 body:
                 gexfParams,
@@ -425,7 +424,7 @@ let gexfGen_url = process.env.GEXF_GENERATOR_URL;
                 }
             });
             const gexfResponse = await response.json();
-            console.log("Returned results:"+ gexfResponse.success, gexfResponse.message)
+            console.log("Returned results:"+ gexfResponse.success, gexfResponse.message+ "donwload link:"+ gexfGen_url+"/downloadGEXF?fileName="+gexfResponse.message)
             return gexfResponse;
         };
         return userAction();

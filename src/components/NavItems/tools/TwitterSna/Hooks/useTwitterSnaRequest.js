@@ -377,7 +377,6 @@ const useTwitterSnaRequest = (request) => {
 
 
     const lastRenderCall = (sessionId, request) => {
-      debugger;
       dispatch(setTwitterSnaLoadingMessage(keyword('sna_builting_heatMap')));
       //axios.get(TwintWrapperUrl + /status/ + sessionId)
       // .then(response => {
