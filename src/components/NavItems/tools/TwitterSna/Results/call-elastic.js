@@ -1,5 +1,6 @@
 
 let elasticSearch_url = process.env.REACT_APP_ELK_URL;
+let gexfGen_url = process.env.GEXF_GENERATOR_URL;
 
 //Functions calling elastic search and return a JSON plotly can use
 
@@ -7,7 +8,6 @@ let elasticSearch_url = process.env.REACT_APP_ELK_URL;
     function getElasticReponseHisto(param, givenFrom, givenUntil) {
         let queryStart = param["from"];
         let queryEnd = param["until"];
-
         let dateEndQuery = new Date(queryEnd);
         let dateStartQuery = new Date(queryStart);
 
@@ -395,7 +395,58 @@ let elasticSearch_url = process.env.REACT_APP_ELK_URL;
     }
 
 
+    export function getESQuery4Gexf(param) {
+        let must = constructMatchPhrase(param);
+        let mustNot = constructMatchNotPhrase(param);
+        // let aggs = constructAggs("urls");
 
+        let size=10000;
+        let esQuery = JSON.stringify(buildQuery4Gexf(must, mustNot,size)).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
+
+        let gexfParams=JSON.stringify({
+            "esURL":elasticSearch_url,
+            "mentions":true,
+            "retweets":true,
+            "replies":true,
+            "trim":false,
+            "twint":true,
+            "tweep":false,
+            "flow":false,
+            "esQuery":esQuery
+        });
+        const userAction = async () => {
+            const response = await fetch("http://localhost:8080/generate", {
+                method: 'POST',
+                body:
+                gexfParams,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const gexfResponse = await response.json();
+            console.log("Returned results:"+ gexfResponse.success, gexfResponse.message)
+            return gexfResponse;
+        };
+        return userAction();
+    }
+
+    function buildQuery4Gexf(must, mustNot, size) {
+        let query = {
+            "query": {
+                "size": size,
+                "bool": {
+                    "must": must,
+                    "filter": [],
+                    "should": [],
+                    "must_not": mustNot
+                }
+            },
+            "sort": [
+                {"date": {"order": "asc"}}
+            ]
+        };
+        return query;
+    }
 
 //Build a query for elastic search
 function buildQuery(aggs, must, mustNot, size) {

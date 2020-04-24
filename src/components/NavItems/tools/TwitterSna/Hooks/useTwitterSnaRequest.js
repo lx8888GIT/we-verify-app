@@ -10,7 +10,8 @@ import {
   getPlotlyJsonHisto,
   getJsonCounts,
   getReactArrayURL,
-  generateWordCloudPlotlyJson
+  generateWordCloudPlotlyJson,
+  getESQuery4Gexf
 } from "../Results/call-elastic";
 
 import useLoadLanguage from "../../../../../Hooks/useLoadLanguage";
@@ -257,7 +258,15 @@ const useTwitterSnaRequest = (request) => {
       };
     };
 
+    const generateGEXF = (data) => {
+      let entries = makeEntries(data);
+    
+        let gexfResult = getESQuery4Gexf(entries);
+        console.log(gexfResult.success);
+        console.log(gexfResult.message);
 
+      
+    };
     const generateGraph = (data, final) => {
       let givenFrom = data.from;
       let givenUntil = data.until;
@@ -368,7 +377,7 @@ const useTwitterSnaRequest = (request) => {
 
 
     const lastRenderCall = (sessionId, request) => {
-
+      debugger;
       dispatch(setTwitterSnaLoadingMessage(keyword('sna_builting_heatMap')));
       //axios.get(TwintWrapperUrl + /status/ + sessionId)
       // .then(response => {
@@ -378,6 +387,10 @@ const useTwitterSnaRequest = (request) => {
       generateGraph(request, true).then(() => {
         dispatch(setTwitterSnaLoading(false));
       });
+
+      generateGEXF(request);
+
+
       //    }
       //  })
       // .catch(e => handleErrors(e))
