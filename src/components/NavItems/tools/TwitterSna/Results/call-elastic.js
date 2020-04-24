@@ -401,7 +401,7 @@ let gexfGen_url = process.env.GEXF_GENERATOR_URL;
         // let aggs = constructAggs("urls");
 
         let size=10000;
-        let esQuery = JSON.stringify(buildQuery4Gexf(must, mustNot,size)).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
+        // let esQuery = JSON.stringify(buildQuery4Gexf(must, mustNot,size)).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
 
         let gexfParams=JSON.stringify({
             "esURL":elasticSearch_url,
@@ -412,8 +412,9 @@ let gexfGen_url = process.env.GEXF_GENERATOR_URL;
             "twint":true,
             "tweep":false,
             "flow":false,
-            "esQuery":esQuery
-        });
+            "esQuery":buildQuery4Gexf(must, mustNot,size)
+        }).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
+        console.log("gexfGen_url", gexfGen_url);
         const userAction = async () => {
             const response = await fetch("http://localhost:8080/generate", {
                 method: 'POST',
@@ -432,8 +433,8 @@ let gexfGen_url = process.env.GEXF_GENERATOR_URL;
 
     function buildQuery4Gexf(must, mustNot, size) {
         let query = {
+            "size": size,
             "query": {
-                "size": size,
                 "bool": {
                     "must": must,
                     "filter": [],
