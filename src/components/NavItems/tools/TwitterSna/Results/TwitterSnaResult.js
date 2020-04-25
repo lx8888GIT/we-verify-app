@@ -28,6 +28,7 @@ import Grid from "@material-ui/core/Grid";
 import LinkIcon from '@material-ui/icons/Link';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import SaveIcon from '@material-ui/icons/Save';
+import BubbleChartIcon from '@material-ui/icons/BubbleChart';
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import CustomTable from "../../../../Shared/CustomTable/CustomTable";
@@ -815,27 +816,24 @@ export default function TwitterSnaResult(props) {
             <Box m={3} />
             <ExpansionPanel>
                 <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon />}
-                >
+                    expandIcon={<ExpandMoreIcon />}>
                     {/* <Typography className={classes.heading}>{keyword(result.cloudChart.title)}</Typography> */}
                     <Typography className={classes.heading}>GEXF Visualization</Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <Button
-                        disabled={_.isEmpty(result.gexf)}
+                    <Button disabled={_.isEmpty(result.gexf)}
                         startIcon={<SaveIcon />}
                         href={result.gexf ? result.gexf.getUrl : undefined}
-                    >
+                        tooltip="Download gexf file">
                         Donwload
-                    </Button>
-                    <Link
-                        variant="body1"
+                    </Button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <Button disabled={_.isEmpty(result.gexf)}
+                        startIcon={<BubbleChartIcon />}
                         href={result.gexf ? result.gexf.visualizationUrl : undefined}
                         target="_blank"
-                        rel="noopener"
-                    >
-                        {result.gexf ? result.gexf.visualizationUrl : "No content"}
-                    </Link>
+                        tooltip="View the network of tweets">
+                        View Graph
+                    </Button>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
             

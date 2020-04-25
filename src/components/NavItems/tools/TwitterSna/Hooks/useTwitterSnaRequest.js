@@ -261,11 +261,9 @@ const useTwitterSnaRequest = (request) => {
     };
 
     const generateGEXF = (data) => {
+      debugger;
       let entries = makeEntries(data);
-    
-        let gexfResult = getESQuery4Gexf(entries);
-        console.log(gexfResult.success);
-        console.log(gexfResult.message);
+       getESQuery4Gexf(entries);
     };
 
     const generateGraph = (data, final) => {
