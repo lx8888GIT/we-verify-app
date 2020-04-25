@@ -424,14 +424,24 @@ let gexfGen_url = process.env.REACT_APP_GEXF_GENERATOR_URL;
                 }
             });
             const gexfResponse = await response.json();
-            // if (gexfResponse.success){
-            let gexfUrl = gexfGen_url+"/downloadGEXF?fileName="+gexfResponse.message;
-            let visURL = 'http://networkx.iti.gr/network_url/?filepath=' + gexfUrl ;//encodeURIComponent();
-            console.log("gexfUrl: "+gexfUrl + "\n visURL: "+ visURL);
-            // }
+            console.log("GEXF Response: ", gexfResponse);
+            let gexfRes = {};
+            // console.log("Response success: ", gexfResponse.success, "\nResponse message: ", gexfResponse.message);
+            if (gexfResponse.success) {
+                gexfRes.file = gexfResponse.message;
+                console.log("GEXF File: ", gexfRes.file);
+                gexfRes.getUrl = `${gexfGen_url}/downloadGEXF?fileName=${gexfResponse.message}`;
+                console.log("GEXF GetURL: ", gexfRes.getUrl);
+                gexfRes.visualizationUrl = `http://networkx.iti.gr/network_url/?filepath=${gexfRes.getUrl}`;
+                console.log("GEXF VisualizationURL: ", gexfRes.visualizationUrl);
+                
+                // let gexfUrl = `${gexfGen_url}/downloadGEXF?fileName=${gexfResponse.message}`;
+                // let visURL = `http://networkx.iti.gr/network_url/?filepath=${gexfUrl}`;//encodeURIComponent();
+                // console.log("gexfUrl: ", gexfUrl, "\nvisURL: ", visURL);
+            }
 
-            console.log("Returned results:"+ gexfResponse.success, gexfResponse.message+ "donwload link:");
-            return gexfResponse;
+            // return gexfResponse;
+            return gexfRes;
         };
         return userAction();
     }

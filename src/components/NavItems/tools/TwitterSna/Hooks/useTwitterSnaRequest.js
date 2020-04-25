@@ -240,6 +240,8 @@ const useTwitterSnaRequest = (request) => {
       }
       else
         result.cloudChart = { title: "top_words_cloud_chart_title" };
+      result.gexf = responseArrayOf7[8];
+      
       dispatch(setTwitterSnaResult(request, result, false, true));
       return result;
     };
@@ -264,9 +266,8 @@ const useTwitterSnaRequest = (request) => {
         let gexfResult = getESQuery4Gexf(entries);
         console.log(gexfResult.success);
         console.log(gexfResult.message);
-
-      
     };
+
     const generateGraph = (data, final) => {
       let givenFrom = data.from;
       let givenUntil = data.until;
@@ -281,7 +282,9 @@ const useTwitterSnaRequest = (request) => {
         getPlotlyJsonHisto(entries, givenFrom, givenUntil)
       ];
       return axios.all(
-        (final) ? [...generateList, generateWordCloudPlotlyJson(entries)] : generateList
+        (final)
+          ? [...generateList, generateWordCloudPlotlyJson(entries), getESQuery4Gexf(entries)]
+          : [...generateList, getESQuery4Gexf(entries)]
       )
         .then(responseArrayOf8 => {
           makeResult(data, responseArrayOf8, givenFrom, givenUntil, final);
