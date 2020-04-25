@@ -1,31 +1,37 @@
-import useMyStyles from "../../../../Shared/MaterialUiStyles/useMyStyles";
-import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState, useCallback } from "react";
-import { Paper } from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
+
+import _ from "lodash";
+import useMyStyles from "../../../../Shared/MaterialUiStyles/useMyStyles";
+import { cleanTwitterSnaState } from "../../../../../redux/actions/tools/twitterSnaActions";
+import CloseResult from "../../../../Shared/CloseResult/CloseResult";
+import useLoadLanguage from "../../../../../Hooks/useLoadLanguage";
+import tsv from "../../../../../LocalDictionary/components/NavItems/tools/TwitterSna.tsv";
+
+import Plot from "react-plotly.js";
+import ReactWordcloud from "react-wordcloud";
+import Fcose from 'cytoscape-fcose';
+import { select } from 'd3-selection';
+import { saveSvgAsPng } from 'save-svg-as-png';
+import { CSVLink } from "react-csv";
+import Cytoscape from 'cytoscape';
+
+import { Paper, Link } from "@material-ui/core";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Typography from "@material-ui/core/Typography";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import Plot from "react-plotly.js";
 import Box from "@material-ui/core/Box";
-import CustomTable from "../../../../Shared/CustomTable/CustomTable";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import LinkIcon from '@material-ui/icons/Link';
 import TwitterIcon from '@material-ui/icons/Twitter';
-import CloseResult from "../../../../Shared/CloseResult/CloseResult";
-import { cleanTwitterSnaState } from "../../../../../redux/actions/tools/twitterSnaActions";
-import ReactWordcloud from "react-wordcloud";
-import { select } from 'd3-selection';
-import useLoadLanguage from "../../../../../Hooks/useLoadLanguage";
-import tsv from "../../../../../LocalDictionary/components/NavItems/tools/TwitterSna.tsv";
-import { saveSvgAsPng } from 'save-svg-as-png';
-import { CSVLink } from "react-csv";
-import Cytoscape from 'cytoscape';
-import Fcose from 'cytoscape-fcose';
-
+import SaveIcon from '@material-ui/icons/Save';
 import CircularProgress from "@material-ui/core/CircularProgress";
+
+import CustomTable from "../../../../Shared/CustomTable/CustomTable";
+
 
 Cytoscape.use( Fcose );
 
@@ -805,6 +811,34 @@ export default function TwitterSnaResult(props) {
                     ]}
                 />
             }
+
+            <Box m={3} />
+            <ExpansionPanel>
+                <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+                >
+                    {/* <Typography className={classes.heading}>{keyword(result.cloudChart.title)}</Typography> */}
+                    <Typography className={classes.heading}>GEXF Visualization</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                    <Button
+                        disabled={_.isEmpty(result.gexf)}
+                        startIcon={<SaveIcon />}
+                        href={result.gexf ? result.gexf.getUrl : undefined}
+                    >
+                        Donwload
+                    </Button>
+                    <Link
+                        variant="body1"
+                        href={result.gexf ? result.gexf.visualizationUrl : undefined}
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        {result.gexf ? result.gexf.visualizationUrl : "No content"}
+                    </Link>
+                </ExpansionPanelDetails>
+            </ExpansionPanel>
+            
         </Paper>
     );
 };
