@@ -424,7 +424,13 @@ let gexfGen_url = process.env.REACT_APP_GEXF_GENERATOR_URL;
                 }
             });
             const gexfResponse = await response.json();
-            console.log("Returned results:"+ gexfResponse.success, gexfResponse.message+ "donwload link:"+ gexfGen_url+"/downloadGEXF?fileName="+gexfResponse.message)
+            // if (gexfResponse.success){
+            let gexfUrl = gexfGen_url+"/downloadGEXF?fileName="+gexfResponse.message;
+            let visURL = 'http://networkx.iti.gr/network_url/?filepath=' + encodeURIComponent(gexfUrl);
+            console.log("gexfUrl: "+gexfUrl + "\n visURL: "+ visURL);
+            // }
+
+            console.log("Returned results:"+ gexfResponse.success, gexfResponse.message+ "donwload link:");
             return gexfResponse;
         };
         return userAction();
