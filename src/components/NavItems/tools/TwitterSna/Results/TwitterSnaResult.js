@@ -16,7 +16,8 @@ import { saveSvgAsPng } from 'save-svg-as-png';
 import { CSVLink } from "react-csv";
 import Cytoscape from 'cytoscape';
 
-import { Paper, Link } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import IconButton from "@material-ui/core/IconButton";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -29,6 +30,7 @@ import LinkIcon from '@material-ui/icons/Link';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import SaveIcon from '@material-ui/icons/Save';
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Toolbar from "@material-ui/core/Toolbar";
 
 import CustomTable from "../../../../Shared/CustomTable/CustomTable";
 
@@ -813,31 +815,31 @@ export default function TwitterSnaResult(props) {
             }
 
             <Box m={3} />
-            <ExpansionPanel>
-                <ExpansionPanelSummary
-                    expandIcon={<ExpandMoreIcon />}
-                >
-                    {/* <Typography className={classes.heading}>{keyword(result.cloudChart.title)}</Typography> */}
-                    <Typography className={classes.heading}>GEXF Visualization</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                    <Button
+            <Paper>
+                <Toolbar>
+                    <Typography className={classes.heading}>Graph visualization</Typography>
+                    <div style={{ flexGrow: 1 }}/>
+                    <IconButton
+                        aria-label="download"
                         disabled={_.isEmpty(result.gexf)}
-                        startIcon={<SaveIcon />}
                         href={result.gexf ? result.gexf.getUrl : undefined}
                     >
-                        Donwload
-                    </Button>
-                    <Link
-                        variant="body1"
+                        <SaveIcon />
+                    </IconButton>
+                </Toolbar>
+                <Box pb={3}>
+                    <Button
+                        variant={"contained"}
+                        color={"primary"}
+                        disabled={_.isEmpty(result.gexf)}
                         href={result.gexf ? result.gexf.visualizationUrl : undefined}
                         target="_blank"
                         rel="noopener"
                     >
-                        {result.gexf ? result.gexf.visualizationUrl : "No content"}
-                    </Link>
-                </ExpansionPanelDetails>
-            </ExpansionPanel>
+                        Open visualization in new window
+                    </Button>
+                </Box>
+            </Paper>
             
         </Paper>
     );
