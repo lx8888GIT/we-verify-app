@@ -232,15 +232,17 @@ const useTwitterSnaRequest = (request) => {
 
         const dateEndQuery = new Date(data.until);
         const dateStartQuery = new Date(data.from);
-        if ((dateEndQuery - dateStartQuery) / (1000 * 3600 * 24) <= 7)
+        if ((dateEndQuery - dateStartQuery) / (1000 * 3600 * 24) <= 7) {
           createHeatMap(request, responseArrayOf7[5].tweets).then((heatmap) => result.heatMap = heatmap);
-        else
+        }
+        else {
           result.heatMap = "tooLarge";
-
+        }
+        result.gexf = responseArrayOf7[8];
       }
-      else
+      else {
         result.cloudChart = { title: "top_words_cloud_chart_title" };
-      result.gexf = responseArrayOf7[8];
+      }
       
       dispatch(setTwitterSnaResult(request, result, false, true));
       return result;
@@ -260,13 +262,13 @@ const useTwitterSnaRequest = (request) => {
       };
     };
 
-    const generateGEXF = (data) => {
-      let entries = makeEntries(data);
+    // const generateGEXF = (data) => {
+    //   let entries = makeEntries(data);
     
-        let gexfResult = getESQuery4Gexf(entries);
-        console.log(gexfResult.success);
-        console.log(gexfResult.message);
-    };
+    //     let gexfResult = getESQuery4Gexf(entries);
+    //     console.log(gexfResult.success);
+    //     console.log(gexfResult.message);
+    // };
 
     const generateGraph = (data, final) => {
       let givenFrom = data.from;
@@ -284,7 +286,7 @@ const useTwitterSnaRequest = (request) => {
       return axios.all(
         (final)
           ? [...generateList, generateWordCloudPlotlyJson(entries), getESQuery4Gexf(entries)]
-          : [...generateList, getESQuery4Gexf(entries)]
+          : generateList
       )
         .then(responseArrayOf8 => {
           makeResult(data, responseArrayOf8, givenFrom, givenUntil, final);
@@ -390,7 +392,7 @@ const useTwitterSnaRequest = (request) => {
         dispatch(setTwitterSnaLoading(false));
       });
 
-      generateGEXF(request);
+      // generateGEXF(request);
 
 
       //    }
