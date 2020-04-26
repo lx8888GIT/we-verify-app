@@ -29,6 +29,7 @@ import Grid from "@material-ui/core/Grid";
 import LinkIcon from '@material-ui/icons/Link';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import SaveIcon from '@material-ui/icons/Save';
+import BubbleChartIcon from '@material-ui/icons/BubbleChart';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Toolbar from "@material-ui/core/Toolbar";
 
@@ -819,24 +820,27 @@ export default function TwitterSnaResult(props) {
                 <Toolbar>
                     <Typography className={classes.heading}>Graph visualization</Typography>
                     <div style={{ flexGrow: 1 }}/>
-                    <IconButton
+                    <Button
                         aria-label="download"
                         disabled={_.isEmpty(result.gexf)}
+                        startIcon={<SaveIcon />}
                         href={result.gexf ? result.gexf.getUrl : undefined}
-                    >
-                        <SaveIcon />
-                    </IconButton>
+                        tooltip="Download gexf file">
+                        Donwload
+                    </Button>
                 </Toolbar>
                 <Box pb={3}>
                     <Button
                         variant={"contained"}
                         color={"primary"}
+                        startIcon={<BubbleChartIcon />}
                         disabled={_.isEmpty(result.gexf)}
                         href={result.gexf ? result.gexf.visualizationUrl : undefined}
                         target="_blank"
                         rel="noopener"
+                        tooltip="View the network of tweets"
                     >
-                        Open visualization in new window
+                        View Graph
                     </Button>
                 </Box>
             </Paper>
