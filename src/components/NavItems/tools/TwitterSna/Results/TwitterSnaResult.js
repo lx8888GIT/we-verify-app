@@ -842,6 +842,20 @@ export default function TwitterSnaResult(props) {
                     >
                         View Graph
                     </Button>
+                    {
+                        // result.gexf &&
+                        // <iframe
+                        //     id="gexf-iframe"
+                        //     name="gexf-iframe"
+                        //     title="Graph visualization"
+                        //     src={result.gexf.visualizationUrl}
+                        //     width="100%"
+                        //     height="600px"
+                        //     importance="low"
+                        //     allowfullscreen={false}
+                        //     allowpaymentrequest={false}
+                        // />
+                    }
                 </Box>
             </Paper>
             
