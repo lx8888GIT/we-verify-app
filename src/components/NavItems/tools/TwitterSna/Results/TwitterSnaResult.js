@@ -1451,6 +1451,8 @@ export default function TwitterSnaResult(props) {
                             {keyword("sna_result_view_graph")}
                         </Button>
                     </Box>
+                    <Box m={1}/>
+                    <OnClickInfo keyword={"twitters_export_graph_tip"}/>
                 </Paper>
             }
 
