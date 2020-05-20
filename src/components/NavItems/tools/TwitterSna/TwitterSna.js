@@ -164,7 +164,7 @@ const TwitterSna = () => {
     const removeQuotes = (list) => {
       let res = [];
       !_.isNil(list) &&
-        list.map(string => {
+        list.forEach(string => {
           res.push(replaceAll(string, "\"", ""));
         });
       return res;
@@ -382,6 +382,7 @@ const TwitterSna = () => {
       // console.log("Updating submittedRequest: ", newSubmittedRequest);
       setSubmittedRequest(newSubmittedRequest);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAuthenticated]);
 
   return (
