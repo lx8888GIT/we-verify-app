@@ -1,11 +1,10 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setError } from "../../../../../redux/actions/errorActions";
 import { setTwitterSnaLoading, setTwitterSnaResult, setTwitterSnaLoadingMessage } from "../../../../../redux/actions/tools/twitterSnaActions";
 import axios from "axios";
 import _ from "lodash";
 import { jLouvain } from 'jlouvain';
-import Infomap from "@mapequation/infomap";
 
 import {
   getPlotlyJsonDonuts,
@@ -954,6 +953,7 @@ const useTwitterSnaRequest = (request) => {
     } else {
       lastRenderCall(null, request);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(request)]);
 
   /* useEffect(() => {
