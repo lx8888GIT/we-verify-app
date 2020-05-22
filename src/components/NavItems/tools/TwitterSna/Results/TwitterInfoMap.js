@@ -78,9 +78,27 @@ export default class TwitterInfoMap extends React.Component {
     }
 
     createHashtagGraphInfomap(infomapFinished, graph, lcTweets) {
-        let infomapResult = infomapFinished.tree;
-        if (infomapResult === undefined) {
-            var commObj = this.extractCommunityFromInfomapOutput(infomapResult);
+        // let infomapResult = infomapFinished.tree;
+        // if (infomapResult === undefined) {
+        //     var commObj = this.extractCommunityFromInfomapOutput(infomapResult);
+        //     let commGraph = this.processCommunityGraph(graph, commObj);
+        //     let userInteraction = this.getInteractionOfUsernames(lcTweets, ['mentions']);
+        //     let legend = this.getLegendOfGraph(commGraph, lcTweets);
+        //     return {
+        //         hashtagGraph: commGraph,
+        //         userInteraction: userInteraction,
+        //         legend: legend
+        //     };
+        // } else {
+        //     let userInteraction = this.getInteractionOfUsernames(lcTweets, ['mentions']);
+        //     let legend = this.getLegendOfGraph(graph, lcTweets);
+        //     return {
+        //         hashtagGraph: graph,
+        //         userInteraction: userInteraction,
+        //         legend: legend
+        //     };
+        // }
+        var commObj = this.extractCommunityFromInfomapOutput(infomapFinished.tree);
             let commGraph = this.processCommunityGraph(graph, commObj);
             let userInteraction = this.getInteractionOfUsernames(lcTweets, ['mentions']);
             let legend = this.getLegendOfGraph(commGraph, lcTweets);
@@ -89,15 +107,6 @@ export default class TwitterInfoMap extends React.Component {
                 userInteraction: userInteraction,
                 legend: legend
             };
-        } else {
-            let userInteraction = this.getInteractionOfUsernames(lcTweets, ['mentions']);
-            let legend = this.getLegendOfGraph(graph, lcTweets);
-            return {
-                hashtagGraph: graph,
-                userInteraction: userInteraction,
-                legend: legend
-            };
-        }
     }
 
     getLegendOfGraph(communityGraph, tweets) {

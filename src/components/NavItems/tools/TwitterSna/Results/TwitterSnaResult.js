@@ -32,7 +32,7 @@ import ReactWordcloud from "react-wordcloud";
 import { select } from 'd3-selection';
 import useLoadLanguage from "../../../../../Hooks/useLoadLanguage";
 import tsv from "../../../../../LocalDictionary/components/NavItems/tools/TwitterSna.tsv";
-import gexfFile from "../GexfFiles/graph-3872654592156710875.gexf";
+import gexfFile from "../GexfFiles/graph-65108767955444131.gexf";
 import { saveSvgAsPng } from 'save-svg-as-png';
 import { CSVLink } from "react-csv";
 import Cytoscape from 'cytoscape';
@@ -40,6 +40,7 @@ import Fcose from 'cytoscape-fcose';
 import { Sigma, RandomizeNodePositions, ForceAtlas2, SigmaEnableWebGL, LoadGEXF, RelativeSize } from 'react-sigma';
 import Plotly from 'plotly.js-dist';
 // import RefreshGraph from './RefreshGraph';
+import EdgeColor from './EdgeColor';
 import TwitterInfoMap from "./TwitterInfoMap";
 import _ from "lodash";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -1419,6 +1420,7 @@ export default function TwitterSnaResult(props) {
                                 style={{ textAlign: 'left', width: '100%', height: '700px' }}
                         >
                             <LoadGEXF path={gexfFile}>
+                            <EdgeColor />
                                 <RandomizeNodePositions>
                                     <ForceAtlas2 iterationsPerRender={1} timeout={120000} />
                                 </RandomizeNodePositions>
