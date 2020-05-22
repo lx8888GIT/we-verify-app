@@ -303,102 +303,6 @@ function generateColorsForCommunities(graph) {
   return graph;
 }
 
-function createCommunity2(graph, filteredTweets) {
-
-  let communities = filteredTweets.filter(tweet => tweet._source.hashtags.length !== 0)
-                                  .map((tweet) => { return { id: tweet._source.username, community: tweet._source.hashtags[0] }; });
-
-  let nodeIdArr = [];
-  graph.nodes.forEach(node => {
-    nodeIdArr.push(node.id);
-  });
-
-  let commNodes = graph.nodes.map((node) => {
-    let commArr = communities.filter(element => element.id === node.id).map((obj) => { return obj.community; });
-    let uniqCommArr = [...new Set(commArr)];
-    let nodes = []
-    if (uniqCommArr.length === 0) {
-      node.community = "NoHashtags";
-      nodes.push(node);
-    } else if (uniqCommArr.length === 1) {
-      node.community = uniqCommArr[0];
-      nodes.push(node);
-    } else {
-      node.community = uniqCommArr;
-      uniqCommArr.forEach(comm => {
-        let copyNode = Object.assign({}, node);
-        copyNode.id = copyNode.id + "__" + comm;
-        copyNode.label = copyNode.id;
-        copyNode.community = comm;
-        nodes.push(copyNode);
-      });
-      // handle edge id here
-    }
-    return nodes;
-  }).flat();
-
-  let sizeOfCommunities = _.countBy(Object.values(communities.map((obj) => { return obj.community; })));
-  let communitiesHas1Node = Object.entries(sizeOfCommunities).filter(([, v]) => v === 1).map(([k]) => k);
-
-  let filteredNodes = commNodes.filter((node) =>
-    (!communitiesHas1Node.includes(node.community.toString()) || (communitiesHas1Node.includes(node.community.toString()) && (node.size >= 1)))
-  );
-
-  let uniqFilteredCommunities = [...new Set(filteredNodes.map((node) => { return node.community; }))];
-  let colors = []
-  uniqFilteredCommunities.forEach(com => {
-    colors[com] = "#000000".replace(/0/g, function () { return (~~(Math.random() * 16)).toString(16); });
-  });
-
-  filteredNodes = filteredNodes.map((node) => {
-    node.color = colors[node.community];
-    return node;
-  });
-
-  let filteredNodesId = filteredNodes.map((node) => { return node.id; });
-
-
-  let duplicatedNodesId = filteredNodesId.filter(name => name.includes('__#'));
-  let edges = graph.edges.map((edge) => {
-    let duplicateEdges = [];
-    duplicatedNodesId.forEach(nodeId => {
-      let copyEdge = Object.assign({}, edge);
-      if (nodeId.startsWith(edge.source)) {
-        copyEdge.source = nodeId;
-        copyEdge.id = nodeId + "__and__" + copyEdge.target;
-        duplicateEdges.push(copyEdge);
-      } else if (nodeId.startsWith(edge.target)) {
-        copyEdge.target = nodeId;
-        copyEdge.id = copyEdge.source + "__and__" + nodeId;
-        duplicateEdges.push(copyEdge);
-      }
-    });
-    if (duplicateEdges.length === 0) {
-      duplicateEdges.push(edge);
-    }
-    return duplicateEdges;
-  }).flat();
-
-  let uniqDuplicatNodesId = [...new Set(duplicatedNodesId.map((nodeId) => { return nodeId.split("__#")[0]; }))];
-  let colorsForDuplicates = [];
-  uniqDuplicatNodesId.forEach(nodeId => {
-    colorsForDuplicates.push([nodeId, "#000000".replace(/0/g, function () { return (~~(Math.random() * 16)).toString(16); })]);
-  });
-
-  filteredNodes = filteredNodes.map((node) => {
-    colorsForDuplicates.forEach(dupUsername => {
-      if (node.id.startsWith(dupUsername[0])) {
-        node.color = dupUsername[1];
-      }
-    });
-    return node;
-  })
-
-  let filteredEdges = edges.filter((edge) => _.difference([edge.source, edge.target], filteredNodesId).length === 0);
-
-  return { nodes: filteredNodes, edges: filteredEdges };
-}
-
 function getLegendOfGraph(communityGraph, tweets, noCommunityMsg) {
   let sizeCommunities = _.countBy(communityGraph.nodes.map(node => { return node.color; }));
   let legends = [];
@@ -435,25 +339,6 @@ function getLegendOfGraph(communityGraph, tweets, noCommunityMsg) {
     ]
   }
 
-  return legends;
-}
-
-function getLegendOfGraph2(communityGraph) {
-
-  let sizeCommunities = _.countBy(communityGraph.nodes.map(node => {
-    if (node.id.includes("__#")) {
-      return node.id.split("__#")[0] + "__" + node.color;
-    } else {
-      return node.community + "__" + node.color;
-    }
-  }));
-  let sortedBySize = _.fromPairs(_.sortBy(_.toPairs(sizeCommunities), 1).reverse());
-  let communitiesColor = Object.keys(sortedBySize);
-
-  let legends = [];
-  communitiesColor.forEach(element => {
-    legends.push({ communityColor: element.split("__")[1], legend: element.split("__")[0] })
-  })
   return legends;
 }
 
@@ -787,9 +672,6 @@ const useTwitterSnaRequest = (request) => {
 
       let lcTweets = lowercaseFieldInTweets(tweets, 'hashtags');
 
-      // let nodesUsername = getNodesAsUsername(lcTweets);
-      // let edgesUserToUserOnHashtag = getEdgesUsernameToUsername(lcTweets,request, "hashtags");
-
       let filteredTweets = lcTweets.filter(tweet => tweet._source.hashtags !== undefined);
       let nodesUsername = getNodesAsUsername(filteredTweets);
       let edgesUserToUserOnHashtag = getEdgesUsernameToUsernameOnHashtagsExcept1st(filteredTweets, request, "hashtags");
@@ -818,41 +700,6 @@ const useTwitterSnaRequest = (request) => {
 
       return {
         data: commGraph,
-        userInteraction: userInteraction,
-        legend: legend
-      };
-    }
-
-    function createUserGraphBasedHashtag2(request, tweets) {
-
-      let lcTweets = lowercaseFieldInTweets(tweets, 'hashtags');
-      let filteredTweets = lcTweets.filter(tweet => tweet._source.hashtags !== undefined);
-
-      let nodesUsername = getNodesAsUsername(filteredTweets);
-
-      let edgesUserToUserOnHashtag = getEdgesUsernameToUsernameOnHashtagsExcept1st(filteredTweets, request, "hashtags");
-
-      let nodesSize = getSizeOfUserBySum(filteredTweets, 'nretweets');
-      nodesUsername.map((node) => {
-        let size = nodesSize.find((e) => { return e.username === node.id }).size;
-        node.size = (size !== undefined) ? size : 1;
-        return node;
-      });
-
-      let graph = {
-        nodes: nodesUsername,
-        edges: edgesUserToUserOnHashtag
-      }
-
-      let communityGraph = createCommunity2(graph, filteredTweets);
-
-      let userInteraction = getInteractionOfUsernames(filteredTweets, ['mentions']);
-      let legend = getLegendOfGraph2(communityGraph);
-
-      return {
-        title: "Community graph",
-        tmpdata: filteredTweets,
-        hashtagGraph: communityGraph,
         userInteraction: userInteraction,
         legend: legend
       };
