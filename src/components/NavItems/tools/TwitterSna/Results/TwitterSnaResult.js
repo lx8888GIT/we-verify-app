@@ -41,6 +41,7 @@ import { Sigma, RandomizeNodePositions, ForceAtlas2, SigmaEnableWebGL, LoadGEXF,
 import Plotly from 'plotly.js-dist';
 // import RefreshGraph from './RefreshGraph';
 import EdgeColor from './EdgeColor';
+import NodeColor from './NodeColor';
 import TwitterInfoMap from "./TwitterInfoMap";
 import _ from "lodash";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -1418,9 +1419,14 @@ export default function TwitterSnaResult(props) {
                         <Sigma
                                 renderer={"canvas"}
                                 style={{ textAlign: 'left', width: '100%', height: '700px' }}
+                                settings={{defaultEdgeColor: "#c0c0c0",
+                                            edgeColor: "default",
+                                            defaultNodeColor: "#3388AA",
+                                            }}
                         >
                             <LoadGEXF path={gexfFile}>
-                            <EdgeColor />
+                            {/* <EdgeColor /> */}
+                            <NodeColor />
                                 <RandomizeNodePositions>
                                     <ForceAtlas2 iterationsPerRender={1} timeout={120000} />
                                 </RandomizeNodePositions>

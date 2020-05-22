@@ -5,25 +5,22 @@ class EdgeColor extends React.Component {
         super(props)
         if(this.props.sigma) {
             let colors = {
-                8: "#00ff00", //green
-                9: "#ffff00", // yellow
-                10: "#C0C0C0" // red
+                8: "#00ff00", //green for retweet
+                9: "#ff0000", // red for reply
+                10: "#ffff00", // yellow for mention
+                11: "#7f00ff" // violet for quote
             }
             console.log("sigma nodes: ", this.props.sigma.graph.nodes());
             console.log("sigma edges: ", this.props.sigma.graph.edges());
             this.props.sigma.graph.edges().forEach(e => {
-                e.color = Math.random()
                 if (e.attributes[8]) {
                     e.color = colors[8];
-                    console.log("edge is retweet");
                 }
                 if (e.attributes[9]) {
                     e.color = colors[9];
-                    console.log("edge is reply");
                 }
                 if (e.attributes[10]) {
                     e.color = colors[10];
-                    console.log("edge is mention");
                 }
             } )
         }
