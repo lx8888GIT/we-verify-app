@@ -387,6 +387,19 @@ function lowercaseFieldInTweets(tweets, field = 'hashtags') {
   return newTweets;
 }
 
+function getTweetAttrArr(tweets) {
+  let tweetAttrArr = tweets.map((tweet) => {
+    let hashtags = (tweet._source.hashtags !== undefined) ? tweet._source.hashtags : [];
+    let mentions = (tweet._source.mentions !== undefined) ? tweet._source.mentions : [];
+    let obj = {
+      hashtags: hashtags,
+      mentions: mentions,
+      username: tweet._source.username
+    }
+    return obj;
+  });
+  return tweetAttrArr;
+}
 
 const useTwitterSnaRequest = (request) => {
 
@@ -567,6 +580,7 @@ const useTwitterSnaRequest = (request) => {
         result.userGraph = createUserGraphBasedHashtagLouvain(request, responseArrayOf9[5].tweets);
         result.coHashtagGraph = createCoHashtagGraph(responseArrayOf9[5].tweets);
         result.gexf = responseArrayOf9[8];
+        result.socioSemanticGraph = createSocioSemanticGraph(responseArrayOf9[5].tweets);
       }
       else
         result.cloudChart = { title: "top_words_cloud_chart_title" };
@@ -587,7 +601,6 @@ const useTwitterSnaRequest = (request) => {
         verified: data.verified
       };
     };
-
 
     const generateGraph = (data, final) => {
       let givenFrom = data.from;
@@ -667,7 +680,6 @@ const useTwitterSnaRequest = (request) => {
       };
     }
 
-
     function createUserGraphBasedHashtagLouvain(request, tweets) {
 
       let lcTweets = lowercaseFieldInTweets(tweets, 'hashtags');
@@ -724,6 +736,14 @@ const useTwitterSnaRequest = (request) => {
       return {
         data: topNodeGraph
       };
+    }
+
+    const createSocioSemanticGraph = (tweets) => {
+      let lcTweets = lowercaseFieldInTweets(tweets, 'hashtags');
+      lcTweets = lowercaseFieldInTweets(lcTweets, 'mentions');
+      lcTweets = lowercaseFieldInTweets(lcTweets, 'username');
+      
+      let tweetAttrMatrix = getTweetAttrArr(lcTweets);
     }
 
     const lastRenderCall = (sessionId, request) => {
