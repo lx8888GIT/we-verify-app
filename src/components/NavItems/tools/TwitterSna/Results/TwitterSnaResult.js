@@ -70,6 +70,7 @@ export default function TwitterSnaResult(props) {
     const [userGraphTweets, setUserGraphTweets] = useState(null);
     const [userGraphInteraction, setUserGraphInteraction] = useState(null);
     const [coHashtagGraphTweets, setCoHashtagGraphTweets] = useState(null);
+    const [socioSemanticGraphTweets, setSocioSemanticGraphTweets] = useState(null);
 
     const CSVheaders = [{ label: keyword('sna_result_word'), key: "word" }, { label: keyword("sna_result_nb_occ"), key: "nb_occ" }, { label: keyword("sna_result_entity"), key: "entity" }];
 
@@ -92,6 +93,9 @@ export default function TwitterSnaResult(props) {
                 break;
             case "coHashtagGraphIdx":
                 setCoHashtagGraphTweets(null);
+                break;
+            case "socioSemanticGraphIdx":
+                setSocioSemanticGraphTweets(null);
                 break;
             default:
                 break;
@@ -128,6 +132,7 @@ export default function TwitterSnaResult(props) {
         setUserGraphTweets(null);
         setUserGraphInteraction(null);
         setCoHashtagGraphTweets(null);
+        setSocioSemanticGraphTweets(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(props.request), props.request])
 
@@ -288,7 +293,7 @@ export default function TwitterSnaResult(props) {
         };
     };
 
-    const displayTweetsOfUser = (data, nbType, index) => {
+    const displayTweetsOfUser = (selectedUser, nbType, index) => {
         let columns = [
             { title: keyword('sna_result_date'), field: 'date' },
             { title: keyword('sna_result_tweet'), field: 'tweet', render: getTweetWithClickableLink },
@@ -312,15 +317,8 @@ export default function TwitterSnaResult(props) {
 
         let resData = [];
 
-        let selectedUser = null;
-        if (index === "userGraphIdx") {
-            selectedUser = data.data.node.id.toLowerCase();
-        } else {
-            selectedUser = data.points[0].label;
-        }
-
         result.tweets.forEach(tweetObj => {
-            if (tweetObj._source.username.toLowerCase() === selectedUser) {
+            if (tweetObj._source.username.toLowerCase() === selectedUser.toLowerCase()) {
                 let date = new Date(tweetObj._source.date);
                 let tmpObj = {
                     date: date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes(),
@@ -364,7 +362,6 @@ export default function TwitterSnaResult(props) {
                 break;
             default:
                 break;
-
         }
     }
 
@@ -424,7 +421,16 @@ export default function TwitterSnaResult(props) {
             username: selectedUser
         };
 
-        setPieCharts3(newRes);
+        switch (index) {
+            case 3:
+                setPieCharts3(newRes);
+                break;
+            case "socioSemanticGraphIdx":
+                setSocioSemanticGraphTweets(newRes);
+                break;
+            default:
+                break;
+        }
     }
 
     const displayUserInteraction = (e) => {
@@ -503,11 +509,11 @@ export default function TwitterSnaResult(props) {
 
         //For mention donuts
         if (index === 3) {
-            displayTweetsOfMention(data.points[0].label, setPieCharts3)
+            displayTweetsOfMention(data.points[0].label, "", 3)
         }
         // For retweets, likes, top_user donut
         else {
-            displayTweetsOfUser(data, nbType, index);
+            displayTweetsOfUser(data.points[0].label, nbType, index);
         }
 
     };
@@ -635,7 +641,7 @@ export default function TwitterSnaResult(props) {
 
         setUserGraphReset(initGraph);
 
-        displayTweetsOfUser(e, '', "userGraphIdx");
+        displayTweetsOfUser(e.data.node.id, '', "userGraphIdx");
 
         displayUserInteraction(e);
     }
@@ -643,6 +649,14 @@ export default function TwitterSnaResult(props) {
     function onClickNodeCoHashtagGraph(e) {
 
         displayTweetsOfWord(e.data.node.id, setCoHashtagGraphTweets);
+    }
+
+    function onClickNodeSocioSemanticGraph(e) {
+        if (e.data.node.type === "Hashtag") {
+            displayTweetsOfWord(e.data.node.id, setSocioSemanticGraphTweets);
+        } else if (e.data.node.type === "Mention") {
+            displayTweetsOfMention(e.data.node.id, "", "socioSemanticGraphIdx");
+        }
     }
 
     function onClickStage(e) {
@@ -1186,6 +1200,7 @@ export default function TwitterSnaResult(props) {
                                 <Sigma graph={result.socioSemanticGraph.data}
                                     renderer={"canvas"}
                                     style={{ textAlign: 'left', width: '100%', height: '700px' }}
+                                    onClickNode={(e) => onClickNodeSocioSemanticGraph(e)}
                                     settings={{
                                         drawEdges: true,
                                         drawEdgeLabels: false,
@@ -1202,10 +1217,47 @@ export default function TwitterSnaResult(props) {
                                         <ForceAtlas2 iterationsPerRender={1} timeout={15000} />
                                     </RandomizeNodePositions>
                                 </Sigma>
+                                <Box m={1}/>
+                                <OnClickInfo keyword={"twittersna_hashtag_graph_tip"}/>
+                                <Box m={2}/>
+                                {
+                                    socioSemanticGraphTweets &&
+                                    <div>
+                                        <Grid container justify="space-between" spacing={2}
+                                            alignContent={"center"}>
+                                            <Grid item>
+                                                <Button
+                                                    variant={"contained"}
+                                                    color={"secondary"}
+                                                    onClick={() => hideTweetsView("socioSemanticGraphIdx")}>
+                                                    {
+                                                        keyword('sna_result_hide')
+                                                    }
+                                                </Button>
+                                            </Grid>
+                                            <Grid item>
+                                                <Button
+                                                    variant={"contained"}
+                                                    color={"primary"}
+                                                    onClick={() => downloadClick(socioSemanticGraphTweets.csvArr, socioSemanticGraphTweets.word)}>
+                                                    {
+                                                        keyword('sna_result_download')
+                                                    }
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                        <Box m={2} />
+                                        <CustomTable title={keyword("sna_result_slected_tweets")}
+                                            colums={socioSemanticGraphTweets.columns}
+                                            data={socioSemanticGraphTweets.data}
+                                            actions={goToTweetAction}
+                                        />
+                                    </div>
+                                }
                             </div>
                         }
                         {
-                            result.coHashtagGraph === undefined &&
+                            result.socioSemanticGraph === undefined &&
                             <CircularProgress className={classes.circularProgress} />
                         }
                     </ExpansionPanelDetails>
