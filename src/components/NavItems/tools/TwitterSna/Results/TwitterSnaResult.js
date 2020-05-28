@@ -1173,12 +1173,51 @@ export default function TwitterSnaResult(props) {
                 </ExpansionPanel>
             }
             {
+                <ExpansionPanel>
+                    <ExpansionPanelSummary
+                        expandIcon={<ExpandMoreIcon />}
+                    >
+                        <Typography className={classes.heading}>Socio-Semantic Graph (Co-occurences of hashtags and mentioned users)</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                    {
+                        result && result.socioSemanticGraph && result.socioSemanticGraph.data.nodes.length !== 0 &&
+                            <div style={{ width: '100%' }}>
+                                <Sigma graph={result.socioSemanticGraph.data}
+                                    renderer={"canvas"}
+                                    style={{ textAlign: 'left', width: '100%', height: '700px' }}
+                                    settings={{
+                                        drawEdges: true,
+                                        drawEdgeLabels: false,
+                                        minNodeSize: 10,
+                                        maxNodeSize: 30,
+                                        minEdgeSize: 1,
+                                        maxEdgeSize: 20,
+                                        defaultNodeColor: "#3388AA",
+                                        defaultEdgeColor: "#C0C0C0",
+                                        edgeColor: "default"
+                                    }}
+                                    >
+                                    <RandomizeNodePositions>
+                                        <ForceAtlas2 iterationsPerRender={1} timeout={15000} />
+                                    </RandomizeNodePositions>
+                                </Sigma>
+                            </div>
+                        }
+                        {
+                            result.coHashtagGraph === undefined &&
+                            <CircularProgress className={classes.circularProgress} />
+                        }
+                    </ExpansionPanelDetails>
+                </ExpansionPanel>
+            }
+            {
                 props.request.userList.length === 0 && result &&
                 <ExpansionPanel>
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <Typography className={classes.heading}>{keyword("twittersna_user_graph_title")}</Typography>
+                        <Typography className={classes.heading}>{keyword("twittersna_user_graph_title")} using Louvain</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         {
@@ -1394,7 +1433,7 @@ export default function TwitterSnaResult(props) {
                 props.request.userList.length === 0 && result &&
                 <ExpansionPanel>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography>{keyword("twittersna_user_graph_title")}</Typography>
+                        <Typography>{keyword("twittersna_user_graph_title")} using Infomap</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                     {
@@ -1413,7 +1452,7 @@ export default function TwitterSnaResult(props) {
                     <ExpansionPanelSummary
                         expandIcon={<ExpandMoreIcon />}
                     >
-                        <Typography className={classes.heading}>{keyword("twittersna_user_graph_title")}</Typography>
+                        <Typography className={classes.heading}>Differentiate users based on merely mention/reply/... of its edges (>50%)</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                         <Sigma
