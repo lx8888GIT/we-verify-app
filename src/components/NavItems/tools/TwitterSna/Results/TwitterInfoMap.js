@@ -356,7 +356,7 @@ export default class TwitterInfoMap extends React.Component {
         let edges = [];
         for (let i = 0; i < nodes.length - 1; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
-                edges.push({ id: nodes[i].id + '_and_' + nodes[j].id, source: nodes[i].id, target: nodes[j].id, label: edgeLabel, weight: 1 });
+                edges.push({ id: nodes[i].id + '___and___' + nodes[j].id, source: nodes[i].id, target: nodes[j].id, label: edgeLabel, weight: 1 });
             }
         }
         return edges;
