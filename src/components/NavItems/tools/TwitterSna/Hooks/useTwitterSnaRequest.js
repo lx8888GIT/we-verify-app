@@ -402,9 +402,20 @@ function getTweetAttrObjArr(tweets) {
   return tweetAttrObjArr;
 }
 
+function getCoOccurCombinationFrom1Arr(arr) {
+  let occurences = [];
+  for (let i = 0; i < arr.length - 1; i++) {
+    for (let j = i + 1; j < arr.length; j++) {
+      let sortedArr = [arr[i], arr[j]].sort()
+      occurences.push({ id: sortedArr[0] + '___and___' + sortedArr[1], count: 1 });
+    }
+  }
+  return occurences;
+}
+
 function getCombinationFrom2Arrs(arr1, arr2) {
   let occurences = [];
-  for (let i = 0; i < arr1.length - 1; i++) {
+  for (let i = 0; i < arr1.length; i++) {
     for (let j = 0; j < arr2.length; j++) {
       occurences.push({ id: arr1[i] + '___and___' + arr2[j], count: 1 });
     }
@@ -416,10 +427,10 @@ function getCoOccurenceHashtagMention(tweetAttrObjArr) {
   let coOccur = [];
   tweetAttrObjArr.forEach((obj) => {
     if (obj.hashtags.length > 0) {
-      coOccur.push(getCombinationFrom2Arrs(obj.hashtags, obj.hashtags));
+      coOccur.push(getCoOccurCombinationFrom1Arr(obj.hashtags));
     }
     if (obj.mentions.length > 0) {
-      coOccur.push(getCombinationFrom2Arrs(obj.mentions, obj.mentions));
+      coOccur.push(getCoOccurCombinationFrom1Arr(obj.mentions));
     }
     if (obj.hashtags.length > 0 && obj.mentions.length > 0) {
       coOccur.push(getCombinationFrom2Arrs(obj.hashtags, obj.mentions));
@@ -440,7 +451,8 @@ function getEdgesFromCoOcurObjArr(coOccurObjArr) {
         source: first,
         target: second,
         size: obj.count, 
-        weight: obj.count
+        weight: obj.count,
+        type: 'curve'
     });
   });
   return edges;
