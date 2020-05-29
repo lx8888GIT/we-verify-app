@@ -807,9 +807,9 @@ const useTwitterSnaRequest = (request) => {
       let freqHashtagObj = _.countBy(tweetAttrObjArr.map((obj) => { return obj.hashtags; }).flat());
       let freqMentionObj = _.countBy(tweetAttrObjArr.map((obj) => { return obj.mentions; }).flat());
       Object.entries(freqHashtagObj).forEach(arr => nodes.push({ id: arr[0], label: arr[0] + ": " + arr[1], size: arr[1], color: getColor("Hashtag"), type: "Hashtag" }));
-      Object.entries(freqMentionObj).forEach(arr => nodes.push({ id: arr[0], label: arr[0] + ": " + arr[1], size: arr[1], color: getColor("UserID"), type: "Mention" }));
+      Object.entries(freqMentionObj).forEach(arr => nodes.push({ id: arr[0], label: "@" + arr[0] + ": " + arr[1], size: arr[1], color: getColor("UserID"), type: "Mention" }));
 
-      let topNodeGraph = getTopNodeGraph({ nodes: nodes, edges: edges}, "size", 30);
+      let topNodeGraph = getTopNodeGraph({ nodes: nodes, edges: edges}, "size", 20);
       return {
         data: topNodeGraph
       };
