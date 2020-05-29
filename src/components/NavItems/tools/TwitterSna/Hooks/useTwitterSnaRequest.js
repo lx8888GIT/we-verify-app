@@ -451,8 +451,7 @@ function getEdgesFromCoOcurObjArr(coOccurObjArr) {
         source: first,
         target: second,
         size: obj.count, 
-        weight: obj.count,
-        type: 'curve'
+        weight: obj.count
     });
   });
   return edges;

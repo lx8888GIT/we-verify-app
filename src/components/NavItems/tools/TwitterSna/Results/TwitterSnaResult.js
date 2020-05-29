@@ -37,7 +37,7 @@ import { saveSvgAsPng } from 'save-svg-as-png';
 import { CSVLink } from "react-csv";
 import Cytoscape from 'cytoscape';
 import Fcose from 'cytoscape-fcose';
-import { Sigma, RandomizeNodePositions, ForceAtlas2, SigmaEnableWebGL, LoadGEXF, RelativeSize } from 'react-sigma';
+import { Sigma, RandomizeNodePositions, ForceAtlas2, SigmaEnableWebGL, LoadGEXF, RelativeSize, EdgeShapes } from 'react-sigma';
 import Plotly from 'plotly.js-dist';
 // import RefreshGraph from './RefreshGraph';
 import EdgeColor from './EdgeColor';
@@ -1136,6 +1136,7 @@ export default function TwitterSnaResult(props) {
                                         edgeColor: "default"
                                     }}
                                     >
+                                    <EdgeShapes default="curve" />
                                     <RandomizeNodePositions>
                                         <ForceAtlas2 iterationsPerRender={1} timeout={15000} />
                                     </RandomizeNodePositions>
@@ -1213,6 +1214,7 @@ export default function TwitterSnaResult(props) {
                                         edgeColor: "default"
                                     }}
                                     >
+                                    <EdgeShapes default="curve" />
                                     <RandomizeNodePositions>
                                         <ForceAtlas2 iterationsPerRender={1} timeout={15000} />
                                     </RandomizeNodePositions>
@@ -1517,6 +1519,7 @@ export default function TwitterSnaResult(props) {
                         >
                             <LoadGEXF path={gexfFile}>
                             {/* <EdgeColor /> */}
+                            <EdgeShapes default="curve" />
                             <NodeColor />
                                 <RandomizeNodePositions>
                                     <ForceAtlas2 iterationsPerRender={1} timeout={120000} />
