@@ -764,7 +764,7 @@ const useTwitterSnaRequest = (request) => {
       var commObj = community();
       let commGraph = processCommunityGraph(graph, commObj);
       let userInteraction = getInteractionOfUsernames(lcTweets, ['mentions']);
-      let legend = getLegendOfGraph(commGraph, lcTweets, keyword("sna_no_community"));
+      let legend = getLegendOfGraph(commGraph, lcTweets, keyword("twittersna_no_community"));
 
       return {
         data: commGraph,
@@ -817,7 +817,7 @@ const useTwitterSnaRequest = (request) => {
 
     const lastRenderCall = (sessionId, request) => {
 
-      dispatch(setTwitterSnaLoadingMessage(keyword('sna_builting_heatMap')));
+      dispatch(setTwitterSnaLoadingMessage(keyword('twittersna_building_graphs')));
       //axios.get(TwintWrapperUrl + /status/ + sessionId)
       // .then(response => {
       //   if (response.data.status === "Error")
@@ -850,14 +850,14 @@ const useTwitterSnaRequest = (request) => {
             lastRenderCall(sessionId, request);
           }
           else if (response.data.status === "CountingWords") {
-            dispatch(setTwitterSnaLoadingMessage(keyword("sna_counting_words")));
+            dispatch(setTwitterSnaLoadingMessage(keyword("twittersna_counting_words")));
             setTimeout(() => getResultUntilsDone(sessionId, false, request), 3000);
           }
           else {
             generateGraph(request, false).then(() => {
               setTimeout(() => getResultUntilsDone(sessionId, false, request), 5000);
 
-              dispatch(setTwitterSnaLoadingMessage(keyword("sna_fetching_tweets")));
+              dispatch(setTwitterSnaLoadingMessage(keyword("twittersna_fetching_tweets")));
             });
           }
         })
