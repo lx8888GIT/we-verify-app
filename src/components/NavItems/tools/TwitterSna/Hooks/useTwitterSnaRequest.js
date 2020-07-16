@@ -720,23 +720,20 @@ const useTwitterSnaRequest = (request) => {
     };
 
 
-    const generateGraph = (data, final) => {
+    const generateGraph = (data, final, sessionId) => {
       let givenFrom = data.from;
       let givenUntil = data.until;
       let entries = makeEntries(data);
-      // let generateList = [
-      //   getReactArrayURL(entries, keyword("elastic_url"), keyword("elastic_count")),
-      //   getJsonCounts(entries),
-      //   getPlotlyJsonHisto(entries, givenFrom, givenUntil)
-      // ];
+
       if (final) {
         axios.all([getESQuery4Gexf(entries)])
         .then(response => {
           dispatch(setGexfExport(response[0]));
         })
       }
+
       return axios.all(
-        (final) ? [getAggregationData(entries), getTweets(entries)] : [getAggregationData(entries)]
+        (final) ? [getAggregationData(entries, sessionId), getTweets(entries, sessionId)] : [getAggregationData(entries, sessionId)]
       )
         .then(responseArrayOf9 => {
           makeResult(data, responseArrayOf9, givenFrom, givenUntil, final);
@@ -876,7 +873,7 @@ const useTwitterSnaRequest = (request) => {
       //   if (response.data.status === "Error")
       //        handleErrors("twitterSnaErrorMessage");
       //  else {
-      generateGraph(request, true).then(() => {
+      generateGraph(request, true, sessionId).then(() => {
         dispatch(setTwitterSnaLoading(false));
       });
       //    }
@@ -895,7 +892,7 @@ const useTwitterSnaRequest = (request) => {
         // await axios.get(TwintWrapperUrl + /status/ + sessionId)
         .then(async response => {
           if (isFirst)
-            await generateGraph(request, false);
+            await generateGraph(request, false, sessionId);
 
           if (response.data.status === "Error")
             handleErrors("twitterSnaErrorMessage");
@@ -907,7 +904,7 @@ const useTwitterSnaRequest = (request) => {
             setTimeout(() => getResultUntilsDone(sessionId, false, request), 3000);
           }
           else {
-            generateGraph(request, false).then(() => {
+            generateGraph(request, false, sessionId).then(() => {
               setTimeout(() => getResultUntilsDone(sessionId, false, request), 5000);
 
               dispatch(setTwitterSnaLoading(true));

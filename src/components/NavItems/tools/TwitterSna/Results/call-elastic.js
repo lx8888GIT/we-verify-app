@@ -57,8 +57,8 @@ let gexfGen_url = process.env.REACT_APP_GEXF_GENERATOR_URL;
         return elasticResponse;
     }
 
-    export function getTweets(param) {
-        let must = constructMatchPhrase(param);
+    export function getTweets(param, sessionId) {
+        let must = constructMatchEssid(sessionId);
         let mustNot = constructMatchNotPhrase(param);
         let aggs = {};
         return queryTweetsFromES(param, aggs, must, mustNot).then(elasticResponse => {
@@ -164,8 +164,8 @@ let gexfGen_url = process.env.REACT_APP_GEXF_GENERATOR_URL;
     }
     
     // Aggregation data for pie charts, timelime chart,...
-    export function getAggregationData(param) {
-        let must = constructMatchPhrase(param);
+    export function getAggregationData(param, sessionId) {
+        let must = constructMatchEssid(sessionId);
         let mustNot = constructMatchNotPhrase(param);
         let aggs = constructAggs(param);
 
@@ -381,21 +381,22 @@ function constructMatchPhrase(param, startDate, endDate) {
         })
     }
 
-    // VERIFIED ACCOUNT ?
-
-
-    // LANGUAGE MATCH
-    if (param.lang !== "none") {
-        match_phrases += ',' + JSON.stringify({
-            "match_phrase": {
-                "lang": {
-                    "query": param.lang
-                }
-            }
-        })
-    }
 
     return [match_phrases]
+}
+
+function constructMatchEssid(sessionId) {
+    let match_phrase = [
+        {
+            "match_phrase": {
+                "essid": {
+                    "query": sessionId
+                }
+            }
+        }
+    ]
+
+    return match_phrase;
 }
 
 //Construct the aggregations (chose what information we will have in the response)
