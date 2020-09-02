@@ -74,7 +74,7 @@ let gexfGen_url = process.env.REACT_APP_GEXF_GENERATOR_URL;
         let mustNot = constructMatchNotPhrase(param);
         // let aggs = constructAggs("urls");
 
-        let size=10000;
+        let size=1000;
         // let esQuery = JSON.stringify(buildQuery4Gexf(must, mustNot,size)).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
 
         let gexfParams=JSON.stringify({
@@ -88,6 +88,7 @@ let gexfGen_url = process.env.REACT_APP_GEXF_GENERATOR_URL;
             "flow":false,
             "esQuery":buildQuery4Gexf(must, mustNot,size)
         }).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}");
+        //console.log("gexfParams:"+gexfParams);
         const userAction = async () => {
             const response = await fetch(gexfGen_url, {
                 method: 'POST',
