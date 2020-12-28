@@ -624,14 +624,9 @@ export default function TwitterSnaResult(props) {
             } 
         ]
 
-    let nameTitle = request.keywordList.join(", ")
-    if (nameTitle.length > 90){
-        nameTitle = nameTitle.substr(0,90) + "...";
-    }
-
         let layout = {
             title: {
-                text: keyword("bubble_chart_title") + "<br>" + nameTitle + " - " + request["from"] + " - " + request["until"],
+                text: keyword("bubble_chart_title") + "<br>" + request.keywordList.join(", ") + " - " + request["from"] + " - " + request["until"],
                 font: {
                     family: 'Arial, sans-serif',
                     size: 18
@@ -662,7 +657,7 @@ export default function TwitterSnaResult(props) {
                     size: 18,
                     color: '#C0C0C0'
                 },
-                range:[0, Math.max(...y) + 0.1 * Math.max(...y)],
+                range:[0, Math.max(...y) + 10],
                 rangemode: 'tozero'
             }
         }
@@ -1596,7 +1591,7 @@ export default function TwitterSnaResult(props) {
                                                     rel="noopener"
                                                     tooltip={gexfExport ? gexfRes.message : undefined}
                                                 >
-                                                    {keyword("twittersna_result_visualize_graph")?keyword("twittersna_result_visualize_graph"):"Visualise"} {" "+gexfRes.title/*  {keyword("twittersna_result_view_graph")} */}
+                                                    {gexfRes.title/* {keyword("twittersna_result_view_graph")} */}
                                                 </Button>
                                             </Grid>
                                         )
